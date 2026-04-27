@@ -1,0 +1,26 @@
+{
+  "name": "GENERATE_NODE — Git Branch Name Generator",
+  "short_name": "GENERATE_NODE",
+  "description": "Generate clean Git branch names from ticket IDs and descriptors. Per-team naming presets, smart paste from Jira / Linear / GitHub, instant clipboard copy.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#05070c",
+  "theme_color": "#05070c",
+  "orientation": "any",
+  "categories": ["developer", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "180x180",
+      "purpose": "any maskable"
+    }
+  ]
+}

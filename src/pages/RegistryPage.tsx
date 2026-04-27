@@ -8,10 +8,12 @@ import { PresetCard } from '@/components/registry/PresetCard';
 import { StatCard } from '@/components/registry/StatCard';
 import { useBranchStore } from '@/store/useBranchStore';
 import { useToastStore } from '@/store/useToastStore';
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { fadeInUp, stagger } from '@/lib/motion';
 import { exportFileName, exportPresetsBlob } from '@/lib/presets-io';
 
 export const RegistryPage = () => {
+  useDocumentTitle('Registry');
   const { presets, ruleViolations, generationCount } = useBranchStore();
   const addPreset = useBranchStore((s) => s.addPreset);
   const removePreset = useBranchStore((s) => s.removePreset);

@@ -6,9 +6,11 @@ import { Button } from '@/components/ui/Button';
 import { LogsTable } from '@/components/logs/LogsTable';
 import { useBranchStore } from '@/store/useBranchStore';
 import { useToastStore } from '@/store/useToastStore';
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { fadeInUp, stagger } from '@/lib/motion';
 
 export const LogsPage = () => {
+  useDocumentTitle('Logs');
   const logs = useBranchStore((s) => s.logs);
   const clearLogs = useBranchStore((s) => s.clearLogs);
   const reuseLog = useBranchStore((s) => s.reuseLog);

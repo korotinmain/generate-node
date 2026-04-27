@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#05070c"/>
+      <stop offset="100%" stop-color="#0a0e1a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#3bf5ff" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#3bf5ff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0 L0 0 0 48" fill="none" stroke="#3bf5ff" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+    <filter id="cyanGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- Corner brackets -->
+  <g stroke="#3bf5ff" stroke-width="2" fill="none" opacity="0.8">
+    <path d="M40 40 L40 90 M40 40 L90 40"/>
+    <path d="M1160 40 L1110 40 M1160 40 L1160 90"/>
+    <path d="M40 590 L40 540 M40 590 L90 590"/>
+    <path d="M1160 590 L1110 590 M1160 590 L1160 540"/>
+  </g>
+
+  <!-- Status bar -->
+  <text x="80" y="100" font-family="JetBrains Mono, monospace" font-size="14" fill="#7a8290" letter-spacing="3">
+    SYS // BRANCH_CMD :: ONLINE
+  </text>
+
+  <!-- Logo mark -->
+  <g transform="translate(540 200)" filter="url(#cyanGlow)">
+    <rect x="0" y="0" width="120" height="120" rx="20" fill="#05070c" stroke="#3bf5ff" stroke-width="3"/>
+    <path d="M30 28 L30 92 M90 28 L90 92 M30 60 L90 60" stroke="#3bf5ff" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <circle cx="30" cy="28" r="7" fill="#3bf5ff"/>
+    <circle cx="90" cy="92" r="7" fill="#ff3ad6"/>
+  </g>
+
+  <!-- Title -->
+  <text x="600" y="400" text-anchor="middle" font-family="Orbitron, sans-serif" font-size="72" font-weight="700" fill="#3bf5ff" letter-spacing="6" filter="url(#cyanGlow)">
+    GENERATE_NODE
+  </text>
+
+  <!-- Subtitle -->
+  <text x="600" y="450" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="22" fill="#c8ced8" letter-spacing="2">
+    Git Branch Name Generator
+  </text>
+
+  <!-- Tagline -->
+  <text x="600" y="510" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="16" fill="#7a8290" letter-spacing="1">
+    » presets · smart paste · ⌘K palette · clipboard sync
+  </text>
+
+  <!-- Footer accents -->
+  <line x1="80" y1="555" x2="320" y2="555" stroke="#3bf5ff" stroke-width="1" opacity="0.5"/>
+  <line x1="880" y1="555" x2="1120" y2="555" stroke="#ff3ad6" stroke-width="1" opacity="0.5"/>
+  <text x="80" y="580" font-family="JetBrains Mono, monospace" font-size="12" fill="#7a8290" letter-spacing="2">
+    » LEVEL_3_AUTH ··· OPERATOR_01
+  </text>
+  <text x="1120" y="580" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="12" fill="#7a8290" letter-spacing="2">
+    OPEN_SOURCE // MIT «
+  </text>
+</svg>
