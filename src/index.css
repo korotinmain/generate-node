@@ -12,6 +12,7 @@
     --bg-panel: 15 20 32;
     --bg-input: 10 14 23;
     --bg-line: 26 34 52;
+    --bg-preview: 7 10 16;
 
     --cyber-cyan: 59 245 255;
     --cyber-cyan-dim: 28 197 208;
@@ -30,34 +31,72 @@
 
     --shadow-rgb: 0 0 0;
     --selection-fg: 255 255 255;
+
+    /* Composed glows referenced by components — themed in one place */
+    --glow-text-cyan: 0 0 8px rgb(var(--cyber-cyan) / 0.8), 0 0 22px rgb(var(--cyber-cyan) / 0.4);
+    --glow-text-magenta: 0 0 8px rgb(var(--cyber-magenta) / 0.8), 0 0 22px rgb(var(--cyber-magenta) / 0.4);
+    --glow-line-connector: 0 0 8px rgb(var(--cyber-cyan) / 0.6);
+    --glow-node-pulse: 0 0 24px rgb(var(--cyber-cyan) / 0.28);
+    --glow-active-label: 0 0 8px rgb(var(--cyber-cyan) / 0.8), 0 0 20px rgb(var(--cyber-cyan) / 0.3);
+    --panel-bg: linear-gradient(180deg, rgb(var(--bg-panel) / 0.72) 0%, rgb(var(--bg-input) / 0.8) 100%);
+    --panel-border: 1px solid rgb(var(--cyber-cyan) / 0.14);
+    --panel-shadow: none;
+    --corner-color: rgb(var(--cyber-cyan) / 0.55);
+
+    /* Atmospheric body wash */
+    --body-wash-1: rgb(var(--cyber-cyan) / 0.06);
+    --body-wash-2: rgb(var(--cyber-magenta) / 0.05);
+    --body-grid-dot: rgb(var(--cyber-cyan) / 0.06);
+    --body-grain: none;
   }
 
   [data-theme='light'] {
     color-scheme: light;
 
-    --bg: 241 244 252;
-    --bg-elevated: 255 255 255;
-    --bg-panel: 248 250 254;
-    --bg-input: 255 255 255;
-    --bg-line: 218 226 240;
+    /* Vellum / drafting paper */
+    --bg: 248 244 232;
+    --bg-elevated: 255 252 244;
+    --bg-panel: 252 248 237;
+    --bg-input: 255 253 246;
+    --bg-line: 218 207 178;
+    --bg-preview: 234 226 205;
 
-    --cyber-cyan: 2 132 158;
-    --cyber-cyan-dim: 8 109 130;
-    --cyber-magenta: 190 24 138;
-    --cyber-magenta-dim: 160 17 116;
-    --cyber-violet: 109 40 217;
-    --cyber-lime: 77 124 15;
-    --cyber-amber: 180 83 9;
-    --cyber-red: 220 38 60;
-    --cyber-grid: 198 215 235;
+    /* Printer inks */
+    --cyber-cyan: 9 86 110;
+    --cyber-cyan-dim: 5 64 84;
+    --cyber-magenta: 168 38 92;
+    --cyber-magenta-dim: 138 28 75;
+    --cyber-violet: 84 56 132;
+    --cyber-lime: 92 116 32;
+    --cyber-amber: 158 90 12;
+    --cyber-red: 168 36 52;
+    --cyber-grid: 218 206 174;
 
-    --text-primary: 12 22 41;
-    --text-secondary: 71 85 105;
-    --text-muted: 100 116 139;
-    --text-faded: 148 163 184;
+    /* Graphite typography */
+    --text-primary: 28 24 18;
+    --text-secondary: 84 70 52;
+    --text-muted: 132 116 92;
+    --text-faded: 184 168 142;
 
-    --shadow-rgb: 30 41 59;
-    --selection-fg: 12 22 41;
+    --shadow-rgb: 80 60 30;
+    --selection-fg: 28 24 18;
+
+    /* Glows replaced with letterpress depth or subtle drop */
+    --glow-text-cyan: 0 1px 0 rgb(var(--cyber-cyan) / 0.18);
+    --glow-text-magenta: 0 1px 0 rgb(var(--cyber-magenta) / 0.18);
+    --glow-line-connector: none;
+    --glow-node-pulse: 0 0 0 1px rgb(var(--cyber-cyan) / 0.18), 0 6px 18px -4px rgb(var(--cyber-cyan) / 0.22);
+    --glow-active-label: 0 1px 0 rgb(var(--bg) / 0.7);
+    --panel-bg: linear-gradient(180deg, rgb(var(--bg-elevated)) 0%, rgb(var(--bg-panel)) 100%);
+    --panel-border: 1px solid rgb(var(--cyber-cyan) / 0.18);
+    --panel-shadow: 0 1px 0 rgb(255 255 255 / 0.7) inset, 0 14px 40px -22px rgb(var(--shadow-rgb) / 0.28);
+    --corner-color: rgb(var(--cyber-cyan) / 0.85);
+
+    /* Sun-through-window washes + faint paper grain */
+    --body-wash-1: rgb(var(--cyber-amber) / 0.06);
+    --body-wash-2: rgb(var(--cyber-magenta) / 0.04);
+    --body-grid-dot: rgb(var(--cyber-grid) / 0.55);
+    --body-grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.32  0 0 0 0 0.24  0 0 0 0 0.12  0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   }
 
   * {
@@ -74,10 +113,11 @@
   body {
     @apply bg-bg text-text-primary font-mono;
     background-image:
-      radial-gradient(circle at 18% 12%, rgb(var(--cyber-cyan) / 0.06) 0%, transparent 42%),
-      radial-gradient(circle at 82% 88%, rgb(var(--cyber-magenta) / 0.05) 0%, transparent 45%),
-      radial-gradient(circle, rgb(var(--cyber-cyan) / 0.06) 1px, transparent 1px);
-    background-size: auto, auto, 22px 22px;
+      var(--body-grain),
+      radial-gradient(circle at 18% 12%, var(--body-wash-1) 0%, transparent 42%),
+      radial-gradient(circle at 82% 88%, var(--body-wash-2) 0%, transparent 45%),
+      radial-gradient(circle, var(--body-grid-dot) 1px, transparent 1px);
+    background-size: 240px 240px, auto, auto, 22px 22px;
     background-attachment: fixed;
     animation: ambient-drift 22s ease-in-out infinite alternate;
   }
@@ -120,30 +160,22 @@
 
 @layer components {
   .text-glow-cyan {
-    text-shadow:
-      0 0 8px rgb(var(--cyber-cyan) / 0.8),
-      0 0 22px rgb(var(--cyber-cyan) / 0.4);
+    text-shadow: var(--glow-text-cyan);
   }
 
   .text-glow-magenta {
-    text-shadow:
-      0 0 8px rgb(var(--cyber-magenta) / 0.8),
-      0 0 22px rgb(var(--cyber-magenta) / 0.4);
+    text-shadow: var(--glow-text-magenta);
   }
 
   .panel-frame {
     position: relative;
-    background:
-      linear-gradient(
-        180deg,
-        rgb(var(--bg-panel) / 0.72) 0%,
-        rgb(var(--bg-input) / 0.8) 100%
-      );
-    border: 1px solid rgb(var(--cyber-cyan) / 0.14);
+    background: var(--panel-bg);
+    border: var(--panel-border);
     border-radius: 4px;
+    box-shadow: var(--panel-shadow);
   }
 
-  /* Corner brackets on the main generator panel */
+  /* Corner brackets — single source of truth via --corner-color */
   .corner-frame::before,
   .corner-frame::after,
   .corner-frame > .corner-frame-bottom::before,
@@ -152,7 +184,7 @@
     position: absolute;
     width: 18px;
     height: 18px;
-    border-color: rgb(var(--cyber-cyan) / 0.55);
+    border-color: var(--corner-color);
     border-style: solid;
     pointer-events: none;
   }

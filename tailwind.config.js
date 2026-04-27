@@ -24,6 +24,7 @@ export default {
           panel: 'rgb(var(--bg-panel) / <alpha-value>)',
           input: 'rgb(var(--bg-input) / <alpha-value>)',
           line: 'rgb(var(--bg-line) / <alpha-value>)',
+          preview: 'rgb(var(--bg-preview) / <alpha-value>)',
         },
         cyber: {
           cyan: 'rgb(var(--cyber-cyan) / <alpha-value>)',

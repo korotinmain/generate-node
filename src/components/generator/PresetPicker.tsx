@@ -38,12 +38,16 @@ export const PresetPicker = ({
 
       <div role="radiogroup" aria-label="Naming preset" className="flex flex-wrap gap-2">
         <Chip
-          label={autoLabel ? `Auto · ${autoLabel}` : 'Auto'}
+          label="Auto"
           icon={<Wand2 className="h-3 w-3" />}
           active={value === null}
           accent="cyan"
           onClick={() => onChange(null)}
-          title="Pick a preset automatically based on the branch type"
+          title={
+            autoLabel
+              ? `Auto-resolved to ${autoLabel} for the current branch type`
+              : 'Pick a preset automatically based on the branch type'
+          }
         />
 
         {presets.map((p) => (

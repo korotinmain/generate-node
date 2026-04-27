@@ -38,10 +38,11 @@ export const BranchTypeSelector = ({ value, onChange }: BranchTypeSelectorProps)
         aria-hidden
         className="absolute left-10 right-10 top-[34px] h-px bg-cyber-cyan/10"
       />
-      {/* Animated progress fill on the connector */}
+      {/* Animated progress fill on the connector — glow themed via --glow-line-connector */}
       <motion.div
         aria-hidden
-        className="absolute left-10 top-[34px] h-px bg-gradient-to-r from-cyber-cyan via-cyber-cyan to-cyber-cyan/30 shadow-[0_0_8px_rgba(59,245,255,0.6)]"
+        className="absolute left-10 top-[34px] h-px bg-gradient-to-r from-cyber-cyan via-cyber-cyan to-cyber-cyan/30"
+        style={{ boxShadow: 'var(--glow-line-connector)' }}
         animate={{ width: `calc((100% - 80px) * ${linePercent / 100})` }}
         transition={{ duration: 0.55, ease: EASE_OUT_SOFT }}
       />
@@ -86,7 +87,7 @@ export const BranchTypeSelector = ({ value, onChange }: BranchTypeSelectorProps)
                     animate={{ opacity: [0.9, 0.4, 0.9], scale: [1, 1.04, 1] }}
                     transition={{ duration: 2.4, ease: 'easeInOut', repeat: Infinity }}
                     style={{
-                      boxShadow: '0 0 24px rgba(59, 245, 255, 0.28)',
+                      boxShadow: 'var(--glow-node-pulse)',
                     }}
                   />
                 ) : null}
@@ -105,18 +106,17 @@ export const BranchTypeSelector = ({ value, onChange }: BranchTypeSelectorProps)
                   />
                 </motion.span>
               </span>
-              <motion.span
-                animate={{
-                  color: isActive ? 'rgb(59 245 255)' : 'rgb(138 150 176)',
-                  textShadow: isActive
-                    ? '0 0 8px rgba(59, 245, 255, 0.8), 0 0 20px rgba(59, 245, 255, 0.3)'
-                    : '0 0 0px rgba(0,0,0,0)',
+              <span
+                className={cn(
+                  'text-[10px] uppercase-wide font-bold transition-[color,text-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
+                  isActive ? 'text-cyber-cyan' : 'text-text-secondary'
+                )}
+                style={{
+                  textShadow: isActive ? 'var(--glow-active-label)' : 'none',
                 }}
-                transition={{ duration: 0.3, ease: EASE_OUT_SOFT }}
-                className="text-[10px] uppercase-wide font-bold"
               >
                 {label}
-              </motion.span>
+              </span>
             </motion.button>
           );
         })}

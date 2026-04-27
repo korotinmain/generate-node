@@ -5,6 +5,10 @@ import { Button } from '@/components/ui/Button';
 import { EASE_OUT_SOFT } from '@/lib/motion';
 import type { BranchType } from '@/types';
 
+// Theme-aware visuals: state classes here resolve through CSS variables, so
+// the active-glow looks like neon bloom in dark mode and ink-pressed depth
+// in light mode without any per-theme branching in the component.
+
 export interface BranchPreviewProps {
   type: BranchType;
   ticketId: string;
@@ -34,15 +38,14 @@ export const BranchPreview = ({
   const segments = splitBranchForDisplay(branchName, type);
 
   return (
-    <motion.div
-      animate={{
-        boxShadow: isValid
-          ? '0 0 12px rgba(255, 58, 214, 0.35), 0 0 32px rgba(255, 58, 214, 0.12)'
-          : '0 0 0px rgba(255, 58, 214, 0)',
-        borderColor: isValid ? 'rgba(255, 58, 214, 0.4)' : 'rgba(59, 245, 255, 0.15)',
-      }}
-      transition={{ duration: 0.3, ease: EASE_OUT_SOFT }}
-      className="relative rounded-sm border bg-black/40 p-4 pl-5"
+    <div
+      className={cn(
+        'relative rounded-sm border bg-bg-preview p-4 pl-5',
+        'transition-[box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
+        isValid
+          ? 'border-cyber-magenta/40 shadow-glow-magenta'
+          : 'border-cyber-cyan/15 shadow-none'
+      )}
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <code
@@ -128,7 +131,7 @@ export const BranchPreview = ({
           </motion.ul>
         ) : null}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 };
 
