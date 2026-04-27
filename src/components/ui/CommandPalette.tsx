@@ -273,6 +273,12 @@ export const CommandPalette = ({ open, onClose }: CommandPaletteProps) => {
       onClose();
       return;
     }
+    if (e.key === 'Tab') {
+      // Trap focus inside the palette — only the search input is tabbable.
+      e.preventDefault();
+      inputRef.current?.focus();
+      return;
+    }
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       if (flat.length === 0) return;

@@ -28,8 +28,8 @@ const AnimatedRoutes = () => {
 
 const AppShellWithShortcuts = () => {
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const openPalette = useCallback(() => setPaletteOpen(true), []);
-  useGlobalShortcuts({ openPalette, paletteOpen });
+  const togglePalette = useCallback(() => setPaletteOpen((o) => !o), []);
+  useGlobalShortcuts({ togglePalette, paletteOpen });
   return (
     <>
       <AppShell>

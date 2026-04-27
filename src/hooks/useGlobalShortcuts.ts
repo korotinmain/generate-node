@@ -4,18 +4,18 @@ import { useLocation } from 'react-router-dom';
 export const GENERATOR_EXECUTE_EVENT = 'generator:execute';
 
 export interface GlobalShortcutsOptions {
-  openPalette: () => void;
+  togglePalette: () => void;
   paletteOpen: boolean;
 }
 
 /**
  * Global keybinds:
- *   ⌘/Ctrl+K    → open command palette (always)
+ *   ⌘/Ctrl+K    → toggle command palette (always)
  *   ⌘/Ctrl+Enter → fire `generator:execute` (only on `/` and only when palette is closed)
  *
  * Page-level handlers subscribe to `GENERATOR_EXECUTE_EVENT` to act.
  */
-export const useGlobalShortcuts = ({ openPalette, paletteOpen }: GlobalShortcutsOptions) => {
+export const useGlobalShortcuts = ({ togglePalette, paletteOpen }: GlobalShortcutsOptions) => {
   const location = useLocation();
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export const useGlobalShortcuts = ({ openPalette, paletteOpen }: GlobalShortcuts
 
       if (e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        openPalette();
+        togglePalette();
         return;
       }
 
@@ -38,5 +38,5 @@ export const useGlobalShortcuts = ({ openPalette, paletteOpen }: GlobalShortcuts
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [openPalette, paletteOpen, location.pathname]);
+  }, [togglePalette, paletteOpen, location.pathname]);
 };
