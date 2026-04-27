@@ -6,6 +6,7 @@ import { Sidebar } from './Sidebar';
 
 export interface AppShellProps {
   children: ReactNode;
+  onOpenPalette: () => void;
 }
 
 /**
@@ -13,14 +14,14 @@ export interface AppShellProps {
  *  - Generator (/) — centered stage with top-nav (matches "Cyber-Terminal Branch Gen" mock).
  *  - Registry / Logs / others — side-nav "OS" shell with sidebar (matches HUD mocks).
  */
-export const AppShell = ({ children }: AppShellProps) => {
+export const AppShell = ({ children, onOpenPalette }: AppShellProps) => {
   const { pathname } = useLocation();
   const isGenerator = pathname === '/';
 
   if (isGenerator) {
     return (
       <div className="min-h-screen flex flex-col">
-        <TopNav />
+        <TopNav onOpenPalette={onOpenPalette} />
         <main className="flex-1 flex flex-col">{children}</main>
       </div>
     );
@@ -28,7 +29,7 @@ export const AppShell = ({ children }: AppShellProps) => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <OsHeader showSearch={pathname.startsWith('/registry')} />
+      <OsHeader onOpenPalette={onOpenPalette} />
       <div className="mx-auto flex w-full max-w-[1440px] flex-1 gap-6 px-6 py-6">
         <Sidebar />
         <main className="flex-1 min-w-0">{children}</main>

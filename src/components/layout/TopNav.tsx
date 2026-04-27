@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Bell, Settings, TerminalSquare } from 'lucide-react';
+import { TerminalSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/cn';
 import { Avatar } from '@/components/ui/Avatar';
@@ -11,7 +11,11 @@ const LINKS = [
   { to: '/logs', label: 'Logs', end: false },
 ];
 
-export const TopNav = () => {
+export interface TopNavProps {
+  onOpenPalette: () => void;
+}
+
+export const TopNav = ({ onOpenPalette }: TopNavProps) => {
   const operator = useBranchStore((s) => s.operator);
 
   return (
@@ -70,46 +74,33 @@ export const TopNav = () => {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-1">
-          <IconButton label="Notifications" badge>
-            <Bell className="h-4 w-4" />
-          </IconButton>
-          <IconButton label="Terminal">
-            <TerminalSquare className="h-4 w-4" />
-          </IconButton>
-          <IconButton label="Settings">
-            <Settings className="h-4 w-4" />
-          </IconButton>
-          <div className="ml-2">
-            <Avatar label={operator.handle} />
-          </div>
+        <div className="ml-auto flex items-center gap-2">
+          <PaletteButton onClick={onOpenPalette} />
+          <Avatar label={operator.handle} />
         </div>
       </div>
     </header>
   );
 };
 
-interface IconButtonProps {
-  label: string;
-  badge?: boolean;
-  children: React.ReactNode;
+interface PaletteButtonProps {
+  onClick: () => void;
 }
 
-const IconButton = ({ label, badge, children }: IconButtonProps) => (
+const PaletteButton = ({ onClick }: PaletteButtonProps) => (
   <button
     type="button"
-    aria-label={label}
+    onClick={onClick}
+    aria-label="Open command palette"
+    title="Command palette · ⌘K"
     className={cn(
-      'relative inline-flex h-9 w-9 items-center justify-center rounded-sm border border-transparent text-text-secondary',
-      'transition-colors hover:text-cyber-cyan hover:border-cyber-cyan/30 focus-ring'
+      'inline-flex h-9 items-center gap-1.5 rounded-sm border border-cyber-cyan/15 bg-bg-input/60 px-2.5 text-text-secondary',
+      'transition-colors hover:text-cyber-cyan hover:border-cyber-cyan/40 focus-ring'
     )}
   >
-    {children}
-    {badge ? (
-      <span
-        aria-hidden
-        className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-cyber-magenta shadow-[0_0_6px_currentColor]"
-      />
-    ) : null}
+    <TerminalSquare className="h-4 w-4" aria-hidden />
+    <kbd className="hidden md:inline-flex items-center font-mono text-[10px] uppercase-wide text-text-muted">
+      ⌘K
+    </kbd>
   </button>
 );

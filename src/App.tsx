@@ -32,7 +32,7 @@ const AppShellWithShortcuts = () => {
   useGlobalShortcuts({ togglePalette, paletteOpen });
   return (
     <>
-      <AppShell>
+      <AppShell onOpenPalette={togglePalette}>
         <AnimatedRoutes />
       </AppShell>
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
