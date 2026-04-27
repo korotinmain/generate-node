@@ -89,10 +89,6 @@ const DEFAULT_PRESETS: Preset[] = [
   },
 ];
 
-// Used to detect and strip the previously-shipped fake counter during persist
-// migration v2 → v3.
-const LEGACY_SEED_GEN_COUNT = 4892;
-
 export const useBranchStore = create<BranchStore>()(
   persist(
     (set, get) => ({
@@ -198,21 +194,6 @@ export const useBranchStore = create<BranchStore>()(
         ruleViolations: state.ruleViolations,
         generationCount: state.generationCount,
       }),
-      migrate: (persisted, fromVersion) => {
-        if (fromVersion < 3 && persisted && typeof persisted === 'object') {
-          const s = persisted as { logs?: LogEntry[]; generationCount?: number };
-          if (Array.isArray(s.logs)) {
-            // Drop the four hardcoded demo logs that shipped in v1/v2.
-            s.logs = s.logs.filter((l) => !l.id?.startsWith('seed-'));
-          }
-          if (typeof s.generationCount === 'number' && s.generationCount >= LEGACY_SEED_GEN_COUNT) {
-            // Subtract the inflated baseline so any real generations the user
-            // did since first load are preserved.
-            s.generationCount = s.generationCount - LEGACY_SEED_GEN_COUNT;
-          }
-        }
-        return persisted;
-      },
     }
   )
 );
