@@ -89,44 +89,9 @@ const DEFAULT_PRESETS: Preset[] = [
   },
 ];
 
-const SEED_LOGS: LogEntry[] = [
-  {
-    id: 'seed-1',
-    timestamp: new Date('2026-04-22T14:32:01').toISOString(),
-    branchName: 'feature/ui-refactor-v2',
-    author: 'OPERATOR_01',
-    authorTag: 'OP',
-    status: 'committed',
-    type: 'feature',
-  },
-  {
-    id: 'seed-2',
-    timestamp: new Date('2026-04-22T11:05:44').toISOString(),
-    branchName: 'hotfix/auth-bypass-patch',
-    author: 'ADMIN_02',
-    authorTag: 'A2',
-    status: 'copied',
-    type: 'hotfix',
-  },
-  {
-    id: 'seed-3',
-    timestamp: new Date('2026-04-21T23:59:01').toISOString(),
-    branchName: 'exp/quantum-mesh-integration',
-    author: 'OPERATOR_01',
-    authorTag: 'OP',
-    status: 'terminated',
-    type: 'feature',
-  },
-  {
-    id: 'seed-4',
-    timestamp: new Date('2026-04-21T18:20:15').toISOString(),
-    branchName: 'core/db-migration-init',
-    author: 'SYS_AUTO_01',
-    authorTag: 'S1',
-    status: 'committed',
-    type: 'feature',
-  },
-];
+// Used to detect and strip the previously-shipped fake counter during persist
+// migration v2 → v3.
+const LEGACY_SEED_GEN_COUNT = 4892;
 
 export const useBranchStore = create<BranchStore>()(
   persist(
@@ -134,9 +99,9 @@ export const useBranchStore = create<BranchStore>()(
       operator: DEFAULT_OPERATOR,
       input: DEFAULT_INPUT,
       presets: DEFAULT_PRESETS,
-      logs: SEED_LOGS,
+      logs: [],
       ruleViolations: 0,
-      generationCount: 4892,
+      generationCount: 0,
 
       setType: (type) => set((s) => ({ input: { ...s.input, type } })),
       setTicketId: (ticketId) => set((s) => ({ input: { ...s.input, ticketId } })),
@@ -223,7 +188,7 @@ export const useBranchStore = create<BranchStore>()(
     }),
     {
       name: 'branch-cmd-store',
-      version: 2,
+      version: 3,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         operator: state.operator,
@@ -233,7 +198,21 @@ export const useBranchStore = create<BranchStore>()(
         ruleViolations: state.ruleViolations,
         generationCount: state.generationCount,
       }),
-      migrate: (persisted, _fromVersion) => persisted,
+      migrate: (persisted, fromVersion) => {
+        if (fromVersion < 3 && persisted && typeof persisted === 'object') {
+          const s = persisted as { logs?: LogEntry[]; generationCount?: number };
+          if (Array.isArray(s.logs)) {
+            // Drop the four hardcoded demo logs that shipped in v1/v2.
+            s.logs = s.logs.filter((l) => !l.id?.startsWith('seed-'));
+          }
+          if (typeof s.generationCount === 'number' && s.generationCount >= LEGACY_SEED_GEN_COUNT) {
+            // Subtract the inflated baseline so any real generations the user
+            // did since first load are preserved.
+            s.generationCount = s.generationCount - LEGACY_SEED_GEN_COUNT;
+          }
+        }
+        return persisted;
+      },
     }
   )
 );
