@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { Clock, Cpu, LayoutGrid, Plus, SquareTerminal } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/cn';
-import { Avatar } from '@/components/ui/Avatar';
+import { OperatorMenu } from '@/components/layout/OperatorMenu';
 import { Button } from '@/components/ui/Button';
 import { useBranchStore } from '@/store/useBranchStore';
 
@@ -25,7 +25,7 @@ export const Sidebar = () => {
       )}
     >
       <div className="flex items-center gap-3 p-4 border-b border-cyber-cyan/10">
-        <Avatar label={operator.handle} />
+        <OperatorMenu />
         <div className="min-w-0">
           <p className="text-[11px] uppercase-wide font-semibold text-text-primary truncate">
             {operator.handle}

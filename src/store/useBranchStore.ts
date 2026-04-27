@@ -44,6 +44,7 @@ interface BranchStore {
   updatePreset: (id: string, patch: Partial<Omit<Preset, 'id' | 'createdAt'>>) => void;
   removePreset: (id: string) => void;
   setPresets: (presets: Preset[]) => void;
+  setOperator: (patch: Partial<Operator>) => void;
 }
 
 const DEFAULT_INPUT: GeneratorInput = {
@@ -216,6 +217,9 @@ export const useBranchStore = create<BranchStore>()(
         set((s) => ({ presets: s.presets.filter((p) => p.id !== id) })),
 
       setPresets: (presets) => set({ presets }),
+
+      setOperator: (patch) =>
+        set((s) => ({ operator: { ...s.operator, ...patch } })),
     }),
     {
       name: 'branch-cmd-store',

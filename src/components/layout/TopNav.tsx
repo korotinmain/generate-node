@@ -2,8 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { TerminalSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/cn';
-import { Avatar } from '@/components/ui/Avatar';
-import { useBranchStore } from '@/store/useBranchStore';
+import { OperatorMenu } from '@/components/layout/OperatorMenu';
 
 const LINKS = [
   { to: '/', label: 'Generator', end: true },
@@ -16,8 +15,6 @@ export interface TopNavProps {
 }
 
 export const TopNav = ({ onOpenPalette }: TopNavProps) => {
-  const operator = useBranchStore((s) => s.operator);
-
   return (
     <header
       className={cn(
@@ -76,7 +73,7 @@ export const TopNav = ({ onOpenPalette }: TopNavProps) => {
 
         <div className="ml-auto flex items-center gap-2">
           <PaletteButton onClick={onOpenPalette} />
-          <Avatar label={operator.handle} />
+          <OperatorMenu />
         </div>
       </div>
     </header>
