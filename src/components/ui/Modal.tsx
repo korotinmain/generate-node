@@ -36,7 +36,7 @@ export const Modal = ({ open, title, onClose, children, widthClass = 'max-w-lg' 
             className="fixed inset-0 bg-black/70 backdrop-blur-sm"
             onClick={onClose}
           />
-          <div className="relative flex min-h-full items-center justify-center p-6 pointer-events-none">
+          <div className="relative flex min-h-screen items-center justify-center p-6 pointer-events-none">
             <motion.div
               role="dialog"
               aria-modal="true"
