@@ -17,6 +17,7 @@ export interface LogEntry {
   authorTag: string; // short 2-char tag, e.g. "OP"
   status: LogStatus;
   type: BranchType;
+  inputSnapshot?: GeneratorInput;
 }
 
 export interface Preset {

@@ -1,4 +1,4 @@
-import { AlertTriangle, Copy, GitBranch, type LucideIcon } from 'lucide-react';
+import { AlertTriangle, Copy, GitBranch, RotateCcw, type LucideIcon } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Badge, STATUS_TONE } from '@/components/ui/Badge';
 import { cn } from '@/lib/cn';
@@ -9,6 +9,7 @@ import type { LogEntry, LogStatus } from '@/types';
 export interface LogsTableProps {
   logs: LogEntry[];
   query: string;
+  onReuse?: (id: string) => void;
 }
 
 const STATUS_ICON: Record<LogStatus, LucideIcon> = {
@@ -23,7 +24,7 @@ const BRANCH_COLOR: Record<LogStatus, string> = {
   terminated: 'text-text-muted',
 };
 
-export const LogsTable = ({ logs, query }: LogsTableProps) => {
+export const LogsTable = ({ logs, query, onReuse }: LogsTableProps) => {
   const filtered = query
     ? logs.filter(
         (l) =>
@@ -64,7 +65,10 @@ export const LogsTable = ({ logs, query }: LogsTableProps) => {
               <Th className="w-[200px]">Timestamp</Th>
               <Th>Branch_Name</Th>
               <Th className="w-[180px]">Author</Th>
-              <Th className="w-[140px] text-right pr-5">Status</Th>
+              <Th className="w-[140px] text-right pr-3">Status</Th>
+              <Th className="w-[60px] text-right pr-5" aria-label="Actions">
+                <span className="sr-only">Actions</span>
+              </Th>
             </tr>
           </thead>
           <tbody>
@@ -83,7 +87,13 @@ export const LogsTable = ({ logs, query }: LogsTableProps) => {
                       ease: EASE_OUT_SOFT,
                       delay: Math.min(i * 0.035, 0.4),
                     }}
-                    className="border-b border-cyber-cyan/5 last:border-b-0 hover:bg-cyber-cyan/[0.04] transition-colors"
+                    onClick={onReuse ? () => onReuse(log.id) : undefined}
+                    className={cn(
+                      'border-b border-cyber-cyan/5 last:border-b-0 transition-colors',
+                      onReuse
+                        ? 'cursor-pointer hover:bg-cyber-cyan/[0.06] focus-within:bg-cyber-cyan/[0.06]'
+                        : 'hover:bg-cyber-cyan/[0.04]'
+                    )}
                   >
                     <Td className="text-text-secondary font-mono text-[12px]">
                       {formatTimestamp(log.timestamp)}
@@ -107,10 +117,26 @@ export const LogsTable = ({ logs, query }: LogsTableProps) => {
                         <span className="font-mono text-[12px] text-text-primary">{log.author}</span>
                       </span>
                     </Td>
-                    <Td className="text-right pr-5">
+                    <Td className="text-right pr-3">
                       <Badge tone={STATUS_TONE[log.status]} dot>
                         {log.status}
                       </Badge>
+                    </Td>
+                    <Td className="text-right pr-5">
+                      {onReuse ? (
+                        <button
+                          type="button"
+                          aria-label={`Reuse ${log.branchName}`}
+                          title="Reuse in Generator"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onReuse(log.id);
+                          }}
+                          className="inline-flex h-7 w-7 items-center justify-center rounded-sm border border-cyber-cyan/20 text-text-secondary transition-colors hover:border-cyber-cyan/60 hover:text-cyber-cyan focus-ring"
+                        >
+                          <RotateCcw className="h-3.5 w-3.5" />
+                        </button>
+                      ) : null}
                     </Td>
                   </motion.tr>
                 );

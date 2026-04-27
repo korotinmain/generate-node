@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { parseSource } from '@/lib/parse-source';
 import type {
   BranchType,
   GeneratorInput,
@@ -34,12 +35,15 @@ interface BranchStore {
     branchName: string;
     status: LogStatus;
     type: BranchType;
+    inputSnapshot?: GeneratorInput;
   }) => LogEntry;
   clearLogs: () => void;
+  reuseLog: (id: string) => boolean;
 
   addPreset: (preset: Omit<Preset, 'id' | 'createdAt'>) => Preset;
   updatePreset: (id: string, patch: Partial<Omit<Preset, 'id' | 'createdAt'>>) => void;
   removePreset: (id: string) => void;
+  setPresets: (presets: Preset[]) => void;
 }
 
 const DEFAULT_INPUT: GeneratorInput = {
@@ -142,7 +146,7 @@ export const useBranchStore = create<BranchStore>()(
           input: { ...DEFAULT_INPUT, type: s.input.type, presetId: s.input.presetId },
         })),
 
-      recordLog: ({ branchName, status, type }) => {
+      recordLog: ({ branchName, status, type, inputSnapshot }) => {
         const { operator } = get();
         const entry: LogEntry = {
           id: generateId(),
@@ -152,6 +156,7 @@ export const useBranchStore = create<BranchStore>()(
           authorTag: operator.handle.slice(0, 2).toUpperCase(),
           status,
           type,
+          ...(inputSnapshot ? { inputSnapshot: { ...inputSnapshot } } : {}),
         };
         set((s) => ({
           logs: [entry, ...s.logs].slice(0, 200),
@@ -161,6 +166,36 @@ export const useBranchStore = create<BranchStore>()(
       },
 
       clearLogs: () => set({ logs: [] }),
+
+      reuseLog: (id) => {
+        const log = get().logs.find((l) => l.id === id);
+        if (!log) return false;
+
+        if (log.inputSnapshot) {
+          set((s) => ({
+            input: {
+              ...s.input,
+              type: log.inputSnapshot!.type,
+              ticketId: log.inputSnapshot!.ticketId,
+              descriptor: log.inputSnapshot!.descriptor,
+              presetId: log.inputSnapshot!.presetId,
+            },
+          }));
+          return true;
+        }
+
+        // Legacy entry — best-effort parse from branchName.
+        const parsed = parseSource(log.branchName);
+        set((s) => ({
+          input: {
+            ...s.input,
+            type: parsed?.type ?? log.type,
+            ticketId: parsed?.ticketId ?? '',
+            descriptor: parsed?.descriptor ?? '',
+          },
+        }));
+        return true;
+      },
 
       addPreset: (preset) => {
         const created: Preset = {
@@ -179,10 +214,12 @@ export const useBranchStore = create<BranchStore>()(
 
       removePreset: (id) =>
         set((s) => ({ presets: s.presets.filter((p) => p.id !== id) })),
+
+      setPresets: (presets) => set({ presets }),
     }),
     {
       name: 'branch-cmd-store',
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         operator: state.operator,
@@ -192,6 +229,7 @@ export const useBranchStore = create<BranchStore>()(
         ruleViolations: state.ruleViolations,
         generationCount: state.generationCount,
       }),
+      migrate: (persisted, _fromVersion) => persisted,
     }
   )
 );

@@ -3,11 +3,13 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { BranchTypeSelector } from '@/components/generator/BranchTypeSelector';
 import { BranchPreview } from '@/components/generator/BranchPreview';
 import { SmartPasteHint } from '@/components/generator/SmartPasteHint';
+import { Autocomplete } from '@/components/ui/Autocomplete';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
 import { ScanLine } from '@/components/ui/ScanLine';
+import { GENERATOR_EXECUTE_EVENT } from '@/hooks/useGlobalShortcuts';
 import { buildBranchName, presetForType } from '@/lib/branch';
 import { copyToClipboard } from '@/lib/clipboard';
+import { recentValues } from '@/lib/history';
 import { EASE_OUT_SOFT, fadeInUp, stagger } from '@/lib/motion';
 import {
   hasImportConflict,
@@ -20,6 +22,7 @@ import { useToastStore } from '@/store/useToastStore';
 
 export const GeneratorPage = () => {
   const { input, presets } = useBranchStore();
+  const logs = useBranchStore((s) => s.logs);
   const setType = useBranchStore((s) => s.setType);
   const setTicketId = useBranchStore((s) => s.setTicketId);
   const setDescriptor = useBranchStore((s) => s.setDescriptor);
@@ -44,6 +47,15 @@ export const GeneratorPage = () => {
     [input.type, input.ticketId, input.descriptor, activePreset?.formatRule]
   );
 
+  const ticketSuggestions = useMemo(
+    () => recentValues(logs, 'ticketId', input.ticketId),
+    [logs, input.ticketId]
+  );
+  const descriptorSuggestions = useMemo(
+    () => recentValues(logs, 'descriptor', input.descriptor),
+    [logs, input.descriptor]
+  );
+
   const ticketRef = useRef<HTMLInputElement>(null);
 
   const handleExecute = async () => {
@@ -53,6 +65,7 @@ export const GeneratorPage = () => {
       branchName: result.branchName,
       status: ok ? 'copied' : 'terminated',
       type: input.type,
+      inputSnapshot: { ...input },
     });
     pushToast({
       message: ok ? 'Branch compiled » Clipboard synced' : 'Clipboard sync failed',
@@ -90,19 +103,16 @@ export const GeneratorPage = () => {
     }
   };
 
-  // Global: Cmd/Ctrl + Enter generates from anywhere on the page.
+  // ⌘+Enter is owned by the global shortcuts hook, which dispatches a
+  // page-scoped event. Re-bind whenever the closure-captured input changes.
   useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-        e.preventDefault();
-        void handleExecute();
-      }
+    const handler = () => {
+      void handleExecute();
     };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-    // handleExecute captures current input; re-bind on change.
+    window.addEventListener(GENERATOR_EXECUTE_EVENT, handler);
+    return () => window.removeEventListener(GENERATOR_EXECUTE_EVENT, handler);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [result.isValid, result.command, result.branchName, input.type]);
+  }, [result.isValid, result.command, result.branchName, input.type, input.ticketId, input.descriptor]);
 
   useEffect(() => {
     ticketRef.current?.focus();
@@ -147,22 +157,24 @@ export const GeneratorPage = () => {
           variants={fadeInUp}
           className="grid grid-cols-1 sm:grid-cols-[minmax(160px,1fr)_2fr] gap-4 mb-3"
         >
-          <Input
+          <Autocomplete
             ref={ticketRef}
             label="Ticket_ID"
             placeholder="e.g. PROJ-123"
             value={input.ticketId}
-            onChange={(e) => setTicketId(e.target.value)}
+            onChange={setTicketId}
+            suggestions={ticketSuggestions}
             onPaste={handleInputPaste}
             autoCapitalize="characters"
           />
-          <Input
+          <Autocomplete
             label="Descriptor"
             placeholder="e.g. update-login-modal"
             value={input.descriptor}
-            onChange={(e) => setDescriptor(e.target.value)}
+            onChange={setDescriptor}
+            suggestions={descriptorSuggestions}
             onPaste={handleInputPaste}
-            onKeyDown={(e) => {
+            onKeyDownExtra={(e) => {
               // Plain Enter only — the global keydown handler owns ⌘/Ctrl + Enter,
               // so skipping here prevents a double-fire when the descriptor has focus.
               if (e.key === 'Enter' && !e.metaKey && !e.ctrlKey) {

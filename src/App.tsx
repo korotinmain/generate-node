@@ -1,8 +1,11 @@
+import { useCallback, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AppShell } from '@/components/layout/AppShell';
+import { CommandPalette } from '@/components/ui/CommandPalette';
 import { PageTransition } from '@/components/ui/PageTransition';
 import { ToastViewport } from '@/components/ui/ToastViewport';
+import { useGlobalShortcuts } from '@/hooks/useGlobalShortcuts';
 import { GeneratorPage } from '@/pages/GeneratorPage';
 import { RegistryPage } from '@/pages/RegistryPage';
 import { LogsPage } from '@/pages/LogsPage';
@@ -23,13 +26,25 @@ const AnimatedRoutes = () => {
   );
 };
 
-export const App = () => {
+const AppShellWithShortcuts = () => {
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const openPalette = useCallback(() => setPaletteOpen(true), []);
+  useGlobalShortcuts({ openPalette, paletteOpen });
   return (
-    <BrowserRouter>
+    <>
       <AppShell>
         <AnimatedRoutes />
       </AppShell>
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
       <ToastViewport />
+    </>
+  );
+};
+
+export const App = () => {
+  return (
+    <BrowserRouter>
+      <AppShellWithShortcuts />
     </BrowserRouter>
   );
 };

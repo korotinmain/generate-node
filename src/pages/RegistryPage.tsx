@@ -1,20 +1,40 @@
-import { AlertTriangle, GitBranch, LayoutGrid, Plus, Boxes } from 'lucide-react';
+import { AlertTriangle, GitBranch, LayoutGrid, Plus, Boxes, Download, Upload } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { NewPresetModal } from '@/components/registry/NewPresetModal';
+import { ImportPresetsModal } from '@/components/registry/ImportPresetsModal';
 import { PresetCard } from '@/components/registry/PresetCard';
 import { StatCard } from '@/components/registry/StatCard';
 import { useBranchStore } from '@/store/useBranchStore';
 import { useToastStore } from '@/store/useToastStore';
 import { fadeInUp, stagger } from '@/lib/motion';
+import { exportFileName, exportPresetsBlob } from '@/lib/presets-io';
 
 export const RegistryPage = () => {
   const { presets, ruleViolations, generationCount } = useBranchStore();
   const addPreset = useBranchStore((s) => s.addPreset);
   const removePreset = useBranchStore((s) => s.removePreset);
+  const setPresets = useBranchStore((s) => s.setPresets);
   const pushToast = useToastStore((s) => s.push);
   const [modalOpen, setModalOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+
+  const handleExport = () => {
+    const blob = exportPresetsBlob(presets);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = exportFileName();
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    pushToast({
+      message: `Exported ${presets.length} preset${presets.length === 1 ? '' : 's'}`,
+      variant: 'success',
+    });
+  };
 
   return (
     <motion.div
@@ -30,13 +50,32 @@ export const RegistryPage = () => {
             Manage operational naming conventions and structural protocols.
           </h1>
         </div>
-        <Button
-          variant="primary"
-          leadingIcon={<Plus className="h-3.5 w-3.5" />}
-          onClick={() => setModalOpen(true)}
-        >
-          New Preset HUD
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="secondary"
+            size="sm"
+            leadingIcon={<Download className="h-3.5 w-3.5" />}
+            onClick={handleExport}
+            disabled={presets.length === 0}
+          >
+            Export
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            leadingIcon={<Upload className="h-3.5 w-3.5" />}
+            onClick={() => setImportOpen(true)}
+          >
+            Import
+          </Button>
+          <Button
+            variant="primary"
+            leadingIcon={<Plus className="h-3.5 w-3.5" />}
+            onClick={() => setModalOpen(true)}
+          >
+            New Preset HUD
+          </Button>
+        </div>
       </motion.header>
 
       <motion.section
@@ -121,6 +160,22 @@ export const RegistryPage = () => {
         onCreate={(preset) => {
           addPreset(preset);
           pushToast({ message: `Preset "${preset.name}" registered`, variant: 'success' });
+        }}
+      />
+
+      <ImportPresetsModal
+        open={importOpen}
+        existing={presets}
+        onClose={() => setImportOpen(false)}
+        onApply={(next, summary) => {
+          setPresets(next);
+          const parts = [
+            `${summary.added} new`,
+            `${summary.replaced} replaced`,
+            `${summary.duplicated} duplicated`,
+            `${summary.skipped} skipped`,
+          ];
+          pushToast({ message: `Import: ${parts.join(' · ')}`, variant: 'success' });
         }}
       />
     </motion.div>

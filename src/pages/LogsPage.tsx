@@ -1,6 +1,7 @@
 import { Activity, Search, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { LogsTable } from '@/components/logs/LogsTable';
 import { useBranchStore } from '@/store/useBranchStore';
@@ -10,8 +11,17 @@ import { fadeInUp, stagger } from '@/lib/motion';
 export const LogsPage = () => {
   const logs = useBranchStore((s) => s.logs);
   const clearLogs = useBranchStore((s) => s.clearLogs);
+  const reuseLog = useBranchStore((s) => s.reuseLog);
   const pushToast = useToastStore((s) => s.push);
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
+
+  const handleReuse = (id: string) => {
+    const ok = reuseLog(id);
+    if (!ok) return;
+    navigate('/');
+    pushToast({ message: 'Loaded log into Generator', variant: 'success' });
+  };
 
   return (
     <motion.div
@@ -75,7 +85,7 @@ export const LogsPage = () => {
       </motion.header>
 
       <motion.div variants={fadeInUp}>
-        <LogsTable logs={logs} query={query} />
+        <LogsTable logs={logs} query={query} onReuse={handleReuse} />
       </motion.div>
     </motion.div>
   );
