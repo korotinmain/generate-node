@@ -1,5 +1,6 @@
 import { TerminalSquare } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export interface OsHeaderProps {
   onOpenPalette: () => void;
@@ -16,6 +17,7 @@ export const OsHeader = ({ onOpenPalette }: OsHeaderProps) => {
         BRANCH_OS // GEN-IV
       </span>
       <div className="ml-auto flex items-center gap-2">
+        <ThemeToggle />
         <button
           type="button"
           onClick={onOpenPalette}

@@ -3,6 +3,7 @@ import { TerminalSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/cn';
 import { OperatorMenu } from '@/components/layout/OperatorMenu';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 const LINKS = [
   { to: '/', label: 'Generator', end: true },
@@ -72,6 +73,7 @@ export const TopNav = ({ onOpenPalette }: TopNavProps) => {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          <ThemeToggle />
           <PaletteButton onClick={onOpenPalette} />
           <OperatorMenu />
         </div>

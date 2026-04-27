@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
+  darkMode: ['selector', '[data-theme="dark"]'],
   theme: {
     extend: {
       fontFamily: {
@@ -18,50 +19,54 @@ export default {
       },
       colors: {
         bg: {
-          DEFAULT: '#05070c',
-          elevated: '#0b0f18',
-          panel: '#0f1420',
-          input: '#0a0e17',
-          line: '#1a2234',
+          DEFAULT: 'rgb(var(--bg) / <alpha-value>)',
+          elevated: 'rgb(var(--bg-elevated) / <alpha-value>)',
+          panel: 'rgb(var(--bg-panel) / <alpha-value>)',
+          input: 'rgb(var(--bg-input) / <alpha-value>)',
+          line: 'rgb(var(--bg-line) / <alpha-value>)',
         },
         cyber: {
-          cyan: '#3bf5ff',
-          'cyan-dim': '#1cc5d0',
-          magenta: '#ff3ad6',
-          'magenta-dim': '#c72aa9',
-          violet: '#8b5cf6',
-          lime: '#b6ff4d',
-          amber: '#ffb547',
-          red: '#ff3b5c',
-          grid: '#1e2535',
+          cyan: 'rgb(var(--cyber-cyan) / <alpha-value>)',
+          'cyan-dim': 'rgb(var(--cyber-cyan-dim) / <alpha-value>)',
+          magenta: 'rgb(var(--cyber-magenta) / <alpha-value>)',
+          'magenta-dim': 'rgb(var(--cyber-magenta-dim) / <alpha-value>)',
+          violet: 'rgb(var(--cyber-violet) / <alpha-value>)',
+          lime: 'rgb(var(--cyber-lime) / <alpha-value>)',
+          amber: 'rgb(var(--cyber-amber) / <alpha-value>)',
+          red: 'rgb(var(--cyber-red) / <alpha-value>)',
+          grid: 'rgb(var(--cyber-grid) / <alpha-value>)',
         },
         text: {
-          primary: '#e6eefc',
-          secondary: '#8a96b0',
-          muted: '#5a6480',
-          faded: '#3e465c',
+          primary: 'rgb(var(--text-primary) / <alpha-value>)',
+          secondary: 'rgb(var(--text-secondary) / <alpha-value>)',
+          muted: 'rgb(var(--text-muted) / <alpha-value>)',
+          faded: 'rgb(var(--text-faded) / <alpha-value>)',
         },
         status: {
-          committed: '#3bf5ff',
-          copied: '#ff3ad6',
-          terminated: '#ff3b5c',
-          pending: '#ffb547',
+          committed: 'rgb(var(--cyber-cyan) / <alpha-value>)',
+          copied: 'rgb(var(--cyber-magenta) / <alpha-value>)',
+          terminated: 'rgb(var(--cyber-red) / <alpha-value>)',
+          pending: 'rgb(var(--cyber-amber) / <alpha-value>)',
         },
       },
       boxShadow: {
-        'glow-cyan': '0 0 12px rgba(59, 245, 255, 0.45), 0 0 32px rgba(59, 245, 255, 0.12)',
-        'glow-cyan-strong': '0 0 20px rgba(59, 245, 255, 0.7), 0 0 48px rgba(59, 245, 255, 0.25)',
-        'glow-magenta': '0 0 12px rgba(255, 58, 214, 0.45), 0 0 32px rgba(255, 58, 214, 0.12)',
-        'glow-red': '0 0 10px rgba(255, 59, 92, 0.5)',
-        'panel': '0 0 0 1px rgba(59, 245, 255, 0.08), 0 8px 28px rgba(0, 0, 0, 0.5)',
+        'glow-cyan':
+          '0 0 12px rgb(var(--cyber-cyan) / 0.45), 0 0 32px rgb(var(--cyber-cyan) / 0.12)',
+        'glow-cyan-strong':
+          '0 0 20px rgb(var(--cyber-cyan) / 0.7), 0 0 48px rgb(var(--cyber-cyan) / 0.25)',
+        'glow-magenta':
+          '0 0 12px rgb(var(--cyber-magenta) / 0.45), 0 0 32px rgb(var(--cyber-magenta) / 0.12)',
+        'glow-red': '0 0 10px rgb(var(--cyber-red) / 0.5)',
+        'panel':
+          '0 0 0 1px rgb(var(--cyber-cyan) / 0.08), 0 8px 28px rgb(var(--shadow-rgb) / 0.5)',
       },
       backgroundImage: {
         'grid-dots':
-          'radial-gradient(circle, rgba(59, 245, 255, 0.12) 1px, transparent 1px)',
+          'radial-gradient(circle, rgb(var(--cyber-cyan) / 0.12) 1px, transparent 1px)',
         'grid-dots-strong':
-          'radial-gradient(circle, rgba(59, 245, 255, 0.22) 1px, transparent 1px)',
+          'radial-gradient(circle, rgb(var(--cyber-cyan) / 0.22) 1px, transparent 1px)',
         'scanline':
-          'linear-gradient(180deg, transparent 0%, transparent 50%, rgba(59, 245, 255, 0.03) 50%, rgba(59, 245, 255, 0.03) 51%, transparent 51%)',
+          'linear-gradient(180deg, transparent 0%, transparent 50%, rgb(var(--cyber-cyan) / 0.03) 50%, rgb(var(--cyber-cyan) / 0.03) 51%, transparent 51%)',
       },
       backgroundSize: {
         'dots-sm': '16px 16px',
@@ -70,10 +75,12 @@ export default {
       keyframes: {
         'pulse-glow': {
           '0%, 100%': {
-            boxShadow: '0 0 12px rgba(59, 245, 255, 0.45), 0 0 32px rgba(59, 245, 255, 0.12)',
+            boxShadow:
+              '0 0 12px rgb(var(--cyber-cyan) / 0.45), 0 0 32px rgb(var(--cyber-cyan) / 0.12)',
           },
           '50%': {
-            boxShadow: '0 0 22px rgba(59, 245, 255, 0.7), 0 0 52px rgba(59, 245, 255, 0.28)',
+            boxShadow:
+              '0 0 22px rgb(var(--cyber-cyan) / 0.7), 0 0 52px rgb(var(--cyber-cyan) / 0.28)',
           },
         },
         'blink': {

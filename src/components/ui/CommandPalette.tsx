@@ -21,6 +21,7 @@ import {
 import { cn } from '@/lib/cn';
 import { rank } from '@/lib/fuzzy';
 import { useBranchStore } from '@/store/useBranchStore';
+import { useThemeStore } from '@/store/useThemeStore';
 import { useToastStore } from '@/store/useToastStore';
 import { copyToClipboard } from '@/lib/clipboard';
 import { ScanLine } from '@/components/ui/ScanLine';
@@ -72,6 +73,8 @@ export const CommandPalette = ({ open, onClose }: CommandPaletteProps) => {
   const reuseLog = useBranchStore((s) => s.reuseLog);
   const resetInput = useBranchStore((s) => s.resetInput);
   const clearLogs = useBranchStore((s) => s.clearLogs);
+  const theme = useThemeStore((s) => s.theme);
+  const toggleTheme = useThemeStore((s) => s.toggleTheme);
   const pushToast = useToastStore((s) => s.push);
 
   const [query, setQuery] = useState('');
@@ -197,6 +200,19 @@ export const CommandPalette = ({ open, onClose }: CommandPaletteProps) => {
           clearLogs();
           pushToast({ message: 'Log buffer cleared', variant: 'info' });
         },
+      },
+      {
+        id: 'action:toggle-theme',
+        label: `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`,
+        group: 'action',
+        keywords: 'theme dark light toggle switch appearance',
+        run: () => {
+          toggleTheme();
+          pushToast({
+            message: `Theme → ${theme === 'dark' ? 'light' : 'dark'}`,
+            variant: 'info',
+          });
+        },
       }
     );
 
@@ -209,6 +225,8 @@ export const CommandPalette = ({ open, onClose }: CommandPaletteProps) => {
     reuseLog,
     resetInput,
     clearLogs,
+    theme,
+    toggleTheme,
     navigate,
     pushToast,
   ]);

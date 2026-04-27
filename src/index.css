@@ -3,8 +3,61 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  :root,
+  [data-theme='dark'] {
     color-scheme: dark;
+
+    --bg: 5 7 12;
+    --bg-elevated: 11 15 24;
+    --bg-panel: 15 20 32;
+    --bg-input: 10 14 23;
+    --bg-line: 26 34 52;
+
+    --cyber-cyan: 59 245 255;
+    --cyber-cyan-dim: 28 197 208;
+    --cyber-magenta: 255 58 214;
+    --cyber-magenta-dim: 199 42 169;
+    --cyber-violet: 139 92 246;
+    --cyber-lime: 182 255 77;
+    --cyber-amber: 255 181 71;
+    --cyber-red: 255 59 92;
+    --cyber-grid: 30 37 53;
+
+    --text-primary: 230 238 252;
+    --text-secondary: 138 150 176;
+    --text-muted: 90 100 128;
+    --text-faded: 62 70 92;
+
+    --shadow-rgb: 0 0 0;
+    --selection-fg: 255 255 255;
+  }
+
+  [data-theme='light'] {
+    color-scheme: light;
+
+    --bg: 241 244 252;
+    --bg-elevated: 255 255 255;
+    --bg-panel: 248 250 254;
+    --bg-input: 255 255 255;
+    --bg-line: 218 226 240;
+
+    --cyber-cyan: 2 132 158;
+    --cyber-cyan-dim: 8 109 130;
+    --cyber-magenta: 190 24 138;
+    --cyber-magenta-dim: 160 17 116;
+    --cyber-violet: 109 40 217;
+    --cyber-lime: 77 124 15;
+    --cyber-amber: 180 83 9;
+    --cyber-red: 220 38 60;
+    --cyber-grid: 198 215 235;
+
+    --text-primary: 12 22 41;
+    --text-secondary: 71 85 105;
+    --text-muted: 100 116 139;
+    --text-faded: 148 163 184;
+
+    --shadow-rgb: 30 41 59;
+    --selection-fg: 12 22 41;
   }
 
   * {
@@ -21,9 +74,9 @@
   body {
     @apply bg-bg text-text-primary font-mono;
     background-image:
-      radial-gradient(circle at 18% 12%, rgba(59, 245, 255, 0.06) 0%, transparent 42%),
-      radial-gradient(circle at 82% 88%, rgba(255, 58, 214, 0.05) 0%, transparent 45%),
-      radial-gradient(circle, rgba(59, 245, 255, 0.06) 1px, transparent 1px);
+      radial-gradient(circle at 18% 12%, rgb(var(--cyber-cyan) / 0.06) 0%, transparent 42%),
+      radial-gradient(circle at 82% 88%, rgb(var(--cyber-magenta) / 0.05) 0%, transparent 45%),
+      radial-gradient(circle, rgb(var(--cyber-cyan) / 0.06) 1px, transparent 1px);
     background-size: auto, auto, 22px 22px;
     background-attachment: fixed;
     animation: ambient-drift 22s ease-in-out infinite alternate;
@@ -36,8 +89,8 @@
   }
 
   ::selection {
-    background-color: rgba(59, 245, 255, 0.3);
-    color: #ffffff;
+    background-color: rgb(var(--cyber-cyan) / 0.3);
+    color: rgb(var(--selection-fg));
   }
 
   /* Scrollbars */
@@ -49,13 +102,13 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: rgba(59, 245, 255, 0.15);
+    background: rgb(var(--cyber-cyan) / 0.15);
     border-radius: 8px;
     border: 2px solid transparent;
     background-clip: content-box;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(59, 245, 255, 0.3);
+    background: rgb(var(--cyber-cyan) / 0.3);
     background-clip: content-box;
   }
 
@@ -68,21 +121,25 @@
 @layer components {
   .text-glow-cyan {
     text-shadow:
-      0 0 8px rgba(59, 245, 255, 0.8),
-      0 0 22px rgba(59, 245, 255, 0.4);
+      0 0 8px rgb(var(--cyber-cyan) / 0.8),
+      0 0 22px rgb(var(--cyber-cyan) / 0.4);
   }
 
   .text-glow-magenta {
     text-shadow:
-      0 0 8px rgba(255, 58, 214, 0.8),
-      0 0 22px rgba(255, 58, 214, 0.4);
+      0 0 8px rgb(var(--cyber-magenta) / 0.8),
+      0 0 22px rgb(var(--cyber-magenta) / 0.4);
   }
 
   .panel-frame {
     position: relative;
     background:
-      linear-gradient(180deg, rgba(15, 20, 32, 0.72) 0%, rgba(10, 14, 23, 0.8) 100%);
-    border: 1px solid rgba(59, 245, 255, 0.14);
+      linear-gradient(
+        180deg,
+        rgb(var(--bg-panel) / 0.72) 0%,
+        rgb(var(--bg-input) / 0.8) 100%
+      );
+    border: 1px solid rgb(var(--cyber-cyan) / 0.14);
     border-radius: 4px;
   }
 
@@ -95,7 +152,7 @@
     position: absolute;
     width: 18px;
     height: 18px;
-    border-color: rgba(59, 245, 255, 0.55);
+    border-color: rgb(var(--cyber-cyan) / 0.55);
     border-style: solid;
     pointer-events: none;
   }
