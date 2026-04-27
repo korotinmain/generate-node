@@ -18,28 +18,21 @@ export const OperatorMenu = ({ className }: OperatorMenuProps) => {
 
   const [open, setOpen] = useState(false);
   const [handle, setHandle] = useState(operator.handle);
-  const [authLevel, setAuthLevel] = useState(operator.authLevel);
 
   const onOpen = () => {
     setHandle(operator.handle);
-    setAuthLevel(operator.authLevel);
     setOpen(true);
   };
 
-  const trimmedHandle = handle.trim();
-  const trimmedAuth = authLevel.trim();
-  const isValid = trimmedHandle.length > 0;
-  const isDirty =
-    trimmedHandle !== operator.handle || trimmedAuth !== operator.authLevel;
+  const trimmed = handle.trim();
+  const isValid = trimmed.length > 0;
+  const isDirty = trimmed !== operator.handle;
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!isValid || !isDirty) return;
-    setOperator({
-      handle: trimmedHandle,
-      authLevel: trimmedAuth || operator.authLevel,
-    });
-    pushToast({ message: `Operator → ${trimmedHandle}`, variant: 'success' });
+    setOperator({ handle: trimmed });
+    pushToast({ message: `Operator → ${trimmed}`, variant: 'success' });
     setOpen(false);
   };
 
@@ -49,7 +42,7 @@ export const OperatorMenu = ({ className }: OperatorMenuProps) => {
         type="button"
         onClick={onOpen}
         aria-label={`Operator profile · ${operator.handle}`}
-        title={`${operator.handle} — click to edit`}
+        title={`${operator.handle} — click to rename`}
         className={cn(
           'group relative inline-flex shrink-0 rounded-full focus-ring transition-transform',
           'hover:scale-[1.06]',
@@ -66,32 +59,25 @@ export const OperatorMenu = ({ className }: OperatorMenuProps) => {
       <Modal
         open={open}
         onClose={() => setOpen(false)}
-        title="Operator // Profile"
+        title="Rename Operator"
+        widthClass="max-w-sm"
       >
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <Input
             label="Handle"
             placeholder="e.g. denys.korotin"
             value={handle}
             onChange={(e) => setHandle(e.target.value)}
-            hint="Author tag stamped on new log entries"
-            error={isValid ? null : 'Handle cannot be empty'}
+            hint="Stamped on new log entries"
+            error={isValid ? null : 'Required'}
             autoFocus
             required
           />
-          <Input
-            label="Auth Level"
-            placeholder="e.g. LEVEL_3_AUTH"
-            value={authLevel}
-            onChange={(e) => setAuthLevel(e.target.value)}
-            hint="Decorative — shown next to the handle in the sidebar"
-          />
-
-          <div className="mt-2 flex items-center justify-end gap-2 border-t border-cyber-cyan/10 pt-4">
-            <Button variant="ghost" onClick={() => setOpen(false)}>
+          <div className="mt-1 flex items-center justify-end gap-2">
+            <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button variant="primary" type="submit" disabled={!isValid || !isDirty}>
+            <Button variant="primary" size="sm" type="submit" disabled={!isValid || !isDirty}>
               Save
             </Button>
           </div>
