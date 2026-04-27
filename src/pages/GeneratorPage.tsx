@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ClipboardEvent } from 'react
 import { AnimatePresence, motion } from 'framer-motion';
 import { BranchTypeSelector } from '@/components/generator/BranchTypeSelector';
 import { BranchPreview } from '@/components/generator/BranchPreview';
+import { PresetPicker } from '@/components/generator/PresetPicker';
 import { SmartPasteHint } from '@/components/generator/SmartPasteHint';
 import { Autocomplete } from '@/components/ui/Autocomplete';
 import { Button } from '@/components/ui/Button';
@@ -26,15 +27,21 @@ export const GeneratorPage = () => {
   const setType = useBranchStore((s) => s.setType);
   const setTicketId = useBranchStore((s) => s.setTicketId);
   const setDescriptor = useBranchStore((s) => s.setDescriptor);
+  const setPresetId = useBranchStore((s) => s.setPresetId);
   const recordLog = useBranchStore((s) => s.recordLog);
   const pushToast = useToastStore((s) => s.push);
 
   const [pendingImport, setPendingImport] = useState<ParseSourceResult | null>(null);
 
-  const activePreset = useMemo(
+  const autoPreset = useMemo(
     () => presetForType(presets, input.type),
     [presets, input.type]
   );
+  const explicitPreset = useMemo(
+    () => (input.presetId ? presets.find((p) => p.id === input.presetId) : undefined),
+    [presets, input.presetId]
+  );
+  const activePreset = explicitPreset ?? autoPreset;
 
   const result = useMemo(
     () =>
@@ -149,8 +156,17 @@ export const GeneratorPage = () => {
           </motion.p>
         </motion.header>
 
-        <motion.div variants={fadeInUp} className="mb-8">
+        <motion.div variants={fadeInUp} className="mb-6">
           <BranchTypeSelector value={input.type} onChange={setType} />
+        </motion.div>
+
+        <motion.div variants={fadeInUp} className="mb-6">
+          <PresetPicker
+            presets={presets}
+            value={input.presetId}
+            onChange={setPresetId}
+            autoLabel={autoPreset?.name}
+          />
         </motion.div>
 
         <motion.div
